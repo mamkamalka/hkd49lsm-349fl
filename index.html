@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#FBF6F0">
+  <!-- Просим поисковики не показывать страницу в выдаче -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Для тебя ❤️</title>
+
+  <!-- Шрифты (Google Fonts). Если интернета нет — сайт покажет обычные шрифты, это не страшно -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Мягкий фон -->
+  <div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <!-- Слой для сердечек -->
+  <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+
+  <!-- Кнопка музыки (появляется после ввода пароля) -->
+  <button class="music-btn later" id="musicBtn" type="button"></button>
+  <audio id="bgm" loop preload="none"></audio>
+
+  <noscript><p style="padding:2rem;text-align:center">Для этой открытки нужен включённый JavaScript.</p></noscript>
+
+  <main>
+
+    <!-- ЭКРАН 1 — ВХОД -->
+    <section class="screen active shown" id="screen-gate">
+      <div class="inner center">
+        <h1 class="title reveal" id="gateTitle" style="--i:0"></h1>
+        <p class="sub reveal" id="gateSub" style="--i:1"></p>
+        <form class="gate-form reveal" id="gateForm" style="--i:2" autocomplete="off" novalidate>
+          <input class="field" id="pwd" type="password" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go" aria-label="Пароль">
+          <button class="btn" id="gateBtn" type="submit"></button>
+          <p class="error" id="gateError" role="alert" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 2 — КОНВЕРТ -->
+    <section class="screen" id="screen-envelope">
+      <div class="inner center">
+        <div class="env-stage reveal" style="--i:0">
+          <button class="envelope" id="envelope" type="button" aria-label="Открыть конверт">
+            <span class="env-back"></span>
+            <span class="env-card"><span class="env-card-text" id="envCardText"></span></span>
+            <span class="env-front"></span>
+            <span class="env-flap"></span>
+            <span class="env-seal" data-heart></span>
+          </button>
+        </div>
+        <div class="slot">
+          <p class="hint reveal" id="envHint" style="--i:2"></p>
+          <button class="btn later" id="envNext" type="button"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 3 — ФОТО -->
+    <section class="screen" id="screen-photo">
+      <div class="inner center">
+        <figure class="polaroid reveal" style="--i:0; --tilt:-2.5deg">
+          <span class="tape"></span>
+          <div class="photo-wrap"><img data-photo="main" alt="" decoding="async"></div>
+          <figcaption id="photoCaption"></figcaption>
+        </figure>
+        <div class="text-block reveal" id="photoText" style="--i:2"></div>
+        <button class="btn reveal" id="photoNext" type="button" style="--i:4"></button>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 4 — ПИСЬМА -->
+    <section class="screen" id="screen-letters">
+      <div class="inner center">
+        <h2 class="h2 reveal" id="lettersTitle" style="--i:0"></h2>
+        <p class="sub reveal" id="lettersSub" style="--i:1"></p>
+        <ul class="letters" id="lettersList"></ul>
+        <p class="locked-hint" id="lettersHint" aria-live="polite"></p>
+        <button class="btn later" id="lettersNext" type="button"></button>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 5 — ЗА ЧТО Я ТЕБЯ ЛЮБЛЮ -->
+    <section class="screen" id="screen-reasons">
+      <div class="inner">
+        <h2 class="h2 reveal" id="reasonsIntro" style="--i:0"></h2>
+        <div class="slot slot-wide reveal" style="--i:1">
+          <button class="tap-card glass" id="reasonBtn" type="button">
+            <span class="tap-text" id="reasonBtnText"></span>
+            <small id="reasonCount"></small>
+          </button>
+          <button class="btn later" id="reasonsNext" type="button"></button>
+        </div>
+        <ul class="reasons" id="reasonsList"></ul>
+      </div>
+    </section>
+
+    <!-- ЭКРАН 6 — ФИНАЛ -->
+    <section class="screen" id="screen-final">
+      <div class="inner center">
+        <figure class="polaroid polaroid-big reveal" style="--i:0; --tilt:1.8deg">
+          <span class="tape"></span>
+          <div class="photo-wrap"><img data-photo="final" alt="" decoding="async"></div>
+        </figure>
+        <h2 class="h2 final-title reveal" id="finalTitle" style="--i:2"></h2>
+        <div class="text-block text-block-long reveal" id="finalBody" style="--i:3"></div>
+        <p class="sign reveal" id="finalSign" style="--i:4"></p>
+        <div class="slot">
+          <button class="btn" id="finalBtn" type="button"></button>
+          <p class="final-msg later" id="finalMsg"></p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Окно с письмом (открывается по нажатию на конверт) -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+      <div class="modal-icon" id="mIcon"></div>
+      <h3 class="modal-title" id="mTitle"></h3>
+      <p class="modal-text" id="mText"></p>
+      <button class="btn btn-ghost" id="mClose" type="button"></button>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
